@@ -26,7 +26,7 @@ Cryptocurrencies have gained significant attention and popularity in recent year
 
 ![image](https://github.com/abdullah19191/CryptoSentimentTracker/assets/71758955/631344a2-9631-4cc4-8ff5-3316c01f2352)
 
-##Libraries Used
+## Libraries Used
 
 - NLTK VADER: Perform sentiment analysis of social media posts.
 - NumPy: Manipulate and analyze numerical data efficiently.

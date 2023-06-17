@@ -80,7 +80,7 @@ def bar_chart(reddit_df):
 
 
 def main():
-    st.title(":bar_chart:CryptoSentimentTracker")
+    st.title("CryptoSentimentTracker:bar_chart:")
     st.markdown("##")
     # Authenticate with Reddit API
     reddit_client = authenticate_reddit()

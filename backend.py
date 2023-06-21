@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 import datetime
+import re
 from streamlit import cache
 from config import (
     bitcoin_refs,
@@ -20,11 +21,19 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
 
 subreddit_names = [
-    'cryptocurrency', 'Bitcoin', 'Crypto','ethereum','CryptoCurrencyTrading',
-    'CryptoMarkets','NFT','Altcoin','CryptoWallets', 'Binance'
+    "cryptocurrency",
+    "Bitcoin",
+    "Crypto",
+    "ethereum",
+    "CryptoCurrencyTrading",
+    "CryptoMarkets",
+    "NFT",
+    "Altcoin",
+    "CryptoWallets",
+    "Binance",
 ]
 # subreddit_names = ["BTC", "ETC", "Binance", "LTC"]
-posts = set()   
+posts = set()
 
 # st.cache_data.clear()
 
@@ -64,7 +73,15 @@ def fetch_reddit_posts(_reddit, num_posts):
             for post in subreddit.hot(limit=num_posts):
                 if post.title and post.score:
                     posts.add(
-                        frozenset({"Title": post.title, "Score": post.score,"Timestamp": datetime.datetime.fromtimestamp(post.created_utc)}.items())
+                        frozenset(
+                            {
+                                "Title": post.title,
+                                "Score": post.score,
+                                "Timestamp": datetime.datetime.fromtimestamp(
+                                    post.created_utc
+                                ),
+                            }.items()
+                        )
                     )
 
         # Converting the set of frozensets to a list of dictionaries
@@ -90,9 +107,27 @@ def mentioned_cryptos(posts_list, refs):
     return flag
 
 
+def extract_timestamp(title):
+    # Define the regex pattern to match timestamps
+    pattern = r"\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]"
+
+    # Search for the timestamp in the title using regex
+    match = re.search(pattern, title)
+
+    if match:
+        # Extract and return the timestamp
+        timestamp = match.group(1)
+        return timestamp
+
+    # If no timestamp found, return None or handle accordingly
+    return None
+
+
+# In this method, we use a regular expression pattern to search for timestamps enclosed in square brackets within the title string. The pattern `r'\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]'` captures the timestamp in the format 'YYYY-MM-DD HH:MM:SS'. If a match is found, we extract the timestamp using `match.group(1)` and return it. If no timestamp is found, we can return `None` or handle it based on your specific requirements.
+
+# You can now use this `extract_timestamp` method in the `extract_crypto_mentions` function to populate the "Timestamp" column with the extracted timestamps.
+
 # Extracting Crypto Coins Posts Related to each coin
-
-
 def extract_crypto_mentions(reddit_df):
     reddit_df.columns = ["Titles", "Scores"]
     reddit_df["Bitcoin"] = reddit_df["Titles"].apply(
@@ -125,6 +160,8 @@ def extract_crypto_mentions(reddit_df):
     reddit_df["Stellar"] = reddit_df["Titles"].apply(
         lambda x: mentioned_cryptos(x, stellar_refs)
     )
+    reddit_df["Timestamp"] = reddit_df["Titles"].apply(extract_timestamp)
+
     return reddit_df
 
 

@@ -123,10 +123,6 @@ def extract_timestamp(title):
     return None
 
 
-# In this method, we use a regular expression pattern to search for timestamps enclosed in square brackets within the title string. The pattern `r'\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]'` captures the timestamp in the format 'YYYY-MM-DD HH:MM:SS'. If a match is found, we extract the timestamp using `match.group(1)` and return it. If no timestamp is found, we can return `None` or handle it based on your specific requirements.
-
-# You can now use this `extract_timestamp` method in the `extract_crypto_mentions` function to populate the "Timestamp" column with the extracted timestamps.
-
 # Extracting Crypto Coins Posts Related to each coin
 def extract_crypto_mentions(reddit_df):
     reddit_df.columns = ["Titles", "Scores"]
@@ -183,11 +179,12 @@ def perform_sentiment_analysis(reddit_df):
     analyzer = SentimentIntensityAnalyzer()
     results = []
     for coin, mentions in coin_mentions.items():
-        for post in mentions["Titles"]:
+        for post, timestamp in zip(mentions["Titles"], mentions["Timestamp"]):
             sentiment = analyzer.polarity_scores(post)
             result = {
                 "Post": post,
                 "Coins": coin,
+                "Timestamp": timestamp,
                 "neg": sentiment["neg"],
                 "neu": sentiment["neu"],
                 "pos": sentiment["pos"],

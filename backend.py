@@ -2,6 +2,7 @@ import praw
 import pandas as pd
 import numpy as np
 import streamlit as st
+import datetime
 from streamlit import cache
 from config import (
     bitcoin_refs,
@@ -63,7 +64,7 @@ def fetch_reddit_posts(_reddit, num_posts):
             for post in subreddit.hot(limit=num_posts):
                 if post.title and post.score:
                     posts.add(
-                        frozenset({"Title": post.title, "Score": post.score}.items())
+                        frozenset({"Title": post.title, "Score": post.score,"Timestamp": datetime.datetime.fromtimestamp(post.created_utc)}.items())
                     )
 
         # Converting the set of frozensets to a list of dictionaries

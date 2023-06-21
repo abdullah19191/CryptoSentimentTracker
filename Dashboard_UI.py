@@ -93,7 +93,7 @@ def main():
     st.write("Authenticated:", reddit_client.read_only)
 
     # Fetch Reddit posts
-    num_posts = 550
+    num_posts = 1550
     reddit_posts = fetch_reddit_posts(reddit_client, num_posts)
     if reddit_posts is None:
         st.error("Failed to fetch Reddit posts. Please try again later.")

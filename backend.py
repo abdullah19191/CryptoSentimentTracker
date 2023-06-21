@@ -18,17 +18,17 @@ from config import (
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
 
-# subreddit_names = [
-#     'cryptocurrency', 'Bitcoin', 'Crypto','ethereum','CryptoCurrencyTrading',
-#     'CryptoMarkets','NFT','Altcoin','CryptoWallets', 'Binance'
-# ]
-subreddit_names = ["BTC", "ETC", "Binance", "LTC"]
-posts = set()
+subreddit_names = [
+    'cryptocurrency', 'Bitcoin', 'Crypto','ethereum','CryptoCurrencyTrading',
+    'CryptoMarkets','NFT','Altcoin','CryptoWallets', 'Binance'
+]
+# subreddit_names = ["BTC", "ETC", "Binance", "LTC"]
+posts = set()   
 
-st.cache_data.clear()
+# st.cache_data.clear()
 
 
-@st.cache_data(persist="disk")
+# @st.cache_data(persist="disk")
 def authenticate_reddit():
     # Reddit API authentication code
     try:
@@ -38,8 +38,12 @@ def authenticate_reddit():
             user_agent="CryptoDashboard990 by /u/DavidMi180",
             password="Pakistan180",
             username="DavidMi180",
+            # client_id="AFQf5b4mzQjv9lgoZ7Q_5A",
+            # client_secret="_luV8kAyWuyQNCMO5d20V5hXe9xd2g",
+            # user_agent="Dev by /u/DavidMi990",
+            # password="Pakistan990",
+            # username="DavidMi990",
         )
-
         return reddit
     except praw.exceptions.PRAWException as e:
         # Handle authentication error

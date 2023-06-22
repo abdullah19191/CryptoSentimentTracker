@@ -108,24 +108,25 @@ def mentioned_cryptos(posts_list, refs):
 
 
 def extract_timestamp(title):
-    # Define the regex pattern to match timestamps
-    pattern = r"\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]"
+    if isinstance(title, str):
+        # Define the regex pattern to match timestamps
+        pattern = r"\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]"
 
-    # Search for the timestamp in the title using regex
-    match = re.search(pattern, title)
+        # Search for the timestamp in the title using regex
+        match = re.search(pattern, title)
 
-    if match:
-        # Extract and return the timestamp
-        timestamp = match.group(1)
-        return timestamp
+        if match:
+            # Extract and return the timestamp
+            timestamp = match.group(1)
+            return timestamp
 
-    # If no timestamp found, return None or handle accordingly
+    # If no timestamp found or title is not a string, return None or handle accordingly
     return None
 
 
 # Extracting Crypto Coins Posts Related to each coin
 def extract_crypto_mentions(reddit_df):
-    reddit_df.columns = ["Titles", "Scores"]
+    reddit_df.columns = ["Titles", "Scores", "Timestamp"]
     reddit_df["Bitcoin"] = reddit_df["Titles"].apply(
         lambda x: mentioned_cryptos(x, bitcoin_refs)
     )
@@ -156,7 +157,6 @@ def extract_crypto_mentions(reddit_df):
     reddit_df["Stellar"] = reddit_df["Titles"].apply(
         lambda x: mentioned_cryptos(x, stellar_refs)
     )
-    reddit_df["Timestamp"] = reddit_df["Titles"].apply(extract_timestamp)
 
     return reddit_df
 
@@ -176,6 +176,7 @@ def perform_sentiment_analysis(reddit_df):
         "CRD": reddit_df[reddit_df["cardano"] == 1],
         "LTH": reddit_df[reddit_df["Litecoin"] == 1],
     }
+    reddit_df["Timestamp"] = reddit_df["Titles"].apply(extract_timestamp)
     analyzer = SentimentIntensityAnalyzer()
     results = []
     for coin, mentions in coin_mentions.items():

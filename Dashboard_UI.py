@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import altair as alt
 
 from backend import (
     authenticate_reddit,
@@ -79,6 +80,37 @@ def bar_chart(reddit_df):
     st.bar_chart(data, use_container_width=True, height=500, width=100)
 
 
+def timestamp_line_chart(reddit_df):
+    reddit_df["Timestamp"] = pd.to_datetime(reddit_df["Timestamp"])
+    chart_data = reddit_df.groupby(["Coins"])["compound"].sum().reset_index()
+
+    # Calculate the total compound score
+    total_score = chart_data["compound"].sum()
+
+    # Calculate the percentage for each coin
+    chart_data["Percentage"] = (chart_data["compound"] / total_score) * 100
+
+    # Set the background color
+    st.markdown(
+        """
+        <style>
+        .stDeckGlChart > div:first-child {
+            background-color: #00172B !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Plot the horizontal bar chart using Streamlit's bar_chart function
+    st.area_chart(
+        chart_data.set_index("Coins"),
+        use_container_width=True,
+        height=480,
+        width=200,
+    )
+
+
 def main():
     st.title("CryptoSentimentTracker:bar_chart:")
     st.markdown("##")
@@ -93,7 +125,7 @@ def main():
     st.write("Authenticated:", reddit_client.read_only)
 
     # Fetch Reddit posts
-    num_posts = 1550
+    num_posts = 650
     reddit_posts = fetch_reddit_posts(reddit_client, num_posts)
     if reddit_posts is None:
         st.error("Failed to fetch Reddit posts. Please try again later.")
@@ -147,23 +179,27 @@ def main():
         value=550,
         step=10,
     )
+    st.sidebar.markdown("## Social Media Platforms:")
+    col1, col2, col3 = st.sidebar.columns(3)
+    col1.image("reddit.png", width=50)
+    col2.image("facebook.png", width=50)
+    col3.image("twitter.png", width=50)
+
     col1, col2 = st.columns(2)
     with col1:
         # Create the line chart card
         line_chart(sentiment_analysis)
         # Create the rise and fall list card
-        st.markdown("Trending Crypto Coins")
-        list_fall_rise = fall_rise(sentiment_analysis)
-        st.dataframe(list_fall_rise, width=1080)
-        list_rise = fall_rise(sentiment_analysis)
-        filtered_results = [
-            result for result in list_rise if result["Status"] == selected_sentiment
-        ]
+        timestamp_line_chart(sentiment_analysis)
+        # st.markdown("Trending Crypto Coins")
+        # list_fall_rise = fall_rise(sentiment_analysis)
+        # st.dataframe(list_fall_rise, width=1080)
+        # list_rise = fall_rise(sentiment_analysis)
+        # filtered_results = [
+        #     result for result in list_rise if result["Status"] == selected_sentiment
+        # ]
         # st.header("Filtered Results")
         # st.dataframe(filtered_results)
-    st.markdown("""---""")
-    st.header("Unveiling Crypto Sentiment, Empowering Investors")
-    # Second column
     with col2:
         with st.container():
             bar_chart(sentiment_analysis)
@@ -172,7 +208,18 @@ def main():
             st.markdown("Distribution of Crypto Coin Mentions According To Posts")
             st.pyplot(sentiment_pie_chart)
         # Create the bar chart card
-
+    st.markdown("Trending Crypto Coins")
+    list_fall_rise = fall_rise(sentiment_analysis)
+    st.dataframe(list_fall_rise, width=1080)
+    st.markdown("""---""")
+    st.header("Unveiling Crypto Sentiment, Empowering Investors")
+    # Second column
+    # list_rise = fall_rise(sentiment_analysis)
+    # filtered_results = [
+    #     result for result in list_rise if result["Status"] == selected_sentiment
+    #     ]
+    # st.header("Filtered Results")
+    # st.dataframe(filtered_results)
     # sentiment_line_chart = line_chart(sentiment_analysis)
     # st.pyplot(sentiment_line_chart)
 

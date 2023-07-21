@@ -49,9 +49,7 @@ def line_chart(reddit_df):
 
     # Draw the line chart with custom x-axis labels
     chart_data = pd.Series(data=scores, index=pd.Index(coins, name="Coins"))
-    st.markdown(
-        "Total sentiment score for each cryptocurrency,visualizing them using a line Chart"
-    )
+    st.markdown("Total sentiment score for each crypto,visualizing using a line Chart")
     st.line_chart(
         chart_data, use_container_width=True, x=x_labels, height=480, width=100
     )
@@ -103,6 +101,9 @@ def timestamp_line_chart(reddit_df):
     )
 
     # Plot the horizontal bar chart using Streamlit's bar_chart function
+    st.markdown(
+        "Calculted total crypto coins according to time comparing with sentiment scores using area chart"
+    )
     st.area_chart(
         chart_data.set_index("Coins"),
         use_container_width=True,
@@ -125,7 +126,7 @@ def main():
     st.write("Authenticated:", reddit_client.read_only)
 
     # Fetch Reddit posts
-    num_posts = 650
+    num_posts = 550
     reddit_posts = fetch_reddit_posts(reddit_client, num_posts)
     if reddit_posts is None:
         st.error("Failed to fetch Reddit posts. Please try again later.")
@@ -146,8 +147,8 @@ def main():
         st.subheader("Total Crypto Currency")
         st.subheader(f" {total_cryptos} {star_rating}")
     with right_column:
-        st.subheader("Total Compound Score")
-        st.subheader(f"Profit Percentage: 64% ")
+        st.subheader("Total Compound Score Profit")
+        st.subheader(f"64% ")
 
     st.markdown("""---""")
 

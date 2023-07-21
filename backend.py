@@ -111,6 +111,8 @@ def fetch_reddit_posts(_reddit, num_posts):
         # Converting the set of frozensets to a list of dictionaries
         posts_list = [dict(post) for post in posts]
         reddit_df = pd.DataFrame.from_dict(posts_list)
+
+        insert_reddit_posts(reddit_df)
         return reddit_df
     except praw.exceptions.PRAWException as e:
         # Handle API error

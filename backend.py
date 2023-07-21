@@ -4,6 +4,7 @@ import numpy as np
 import streamlit as st
 import datetime
 import re
+import sqlite3
 from streamlit import cache
 from config import (
     bitcoin_refs,
@@ -61,7 +62,30 @@ def authenticate_reddit():
         return None
 
 
-# @st.cache_data(persist="disk", show_spinner=False)
+def create_database():
+    connection = sqlite3.connect("reddit_data.db")
+    cursor = connection.cursor()
+    cursor.execute(
+        """CREATE TABLE IF NOT EXISTS reddit_posts (Timestamp DATETIME, Coins TEXT, Compound REAL)"""
+    )
+    connection.commit()
+    connection.close()
+
+
+def insert_reddit_posts(reddit_df):
+    connection = sqlite3.connect("reddit_data.db")
+    reddit_df.to_sql("reddit_posts", connection, if_exists="append", index=False)
+    connection.commit()
+    connection.close()
+
+
+def fetch_historical_data():
+    connection = sqlite3.connect("reddit_data.db")
+    reddit_df = pd.read_sql_query("SELECT * FROM reddit_posts", connection)
+    connection.close()
+    return reddit_df
+
+
 def fetch_reddit_posts(_reddit, num_posts):
     # Fetching and processing Reddit posts code
     try:

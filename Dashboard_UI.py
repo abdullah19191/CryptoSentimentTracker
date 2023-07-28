@@ -6,10 +6,10 @@ import altair as alt
 
 from backend import (
     authenticate_reddit,
-    create_database,
+    # create_database,
     fetch_reddit_posts,
     extract_crypto_mentions,
-    fetch_historical_data,
+    # fetch_historical_data,
     perform_sentiment_analysis,
     pie_chart,
     fall_rise,
@@ -120,7 +120,7 @@ def main():
     # Authenticate with Reddit API
     reddit_client = authenticate_reddit()
 
-    create_database()
+    # create_database()
 
     if reddit_client is None:
         st.error(
@@ -132,17 +132,19 @@ def main():
 
     # Fetch Reddit posts
     num_posts = 550
-    try:
-        reddit_posts = fetch_reddit_posts(reddit_client, num_posts)
-    except Exception as e:
-        st.error(
-            "Error fetching real-time data from Reddit. Displaying historical data..."
-        )
-        reddit_posts = fetch_historical_data()
+    reddit_posts = fetch_reddit_posts(reddit_client, num_posts)
 
-    if reddit_posts is None or reddit_posts == "KeyError: Coins":
-        st.error("Failed to fetch Reddit posts. Please try again later.")
-        return
+    # try:
+    #     reddit_posts = fetch_reddit_posts(reddit_client, num_posts)
+    # except Exception as e:
+    #     st.error(
+    #         "Error fetching real-time data from Reddit. Displaying historical data..."
+    #     )
+    #     reddit_posts = fetch_historical_data()
+
+    # if reddit_posts.empty or "Coins" not in reddit_posts.columns:
+    #     st.error("Failed to fetch Reddit posts. Please try again later.")
+    #     return
 
     crypto_mentions = extract_crypto_mentions(reddit_posts)
     sentiment_analysis = perform_sentiment_analysis(crypto_mentions)

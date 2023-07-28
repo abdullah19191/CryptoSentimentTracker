@@ -44,16 +44,16 @@ def authenticate_reddit():
     # Reddit API authentication code
     try:
         reddit = praw.Reddit(
-            client_id="TlMkAZVd8CO4k1j54fbcQg",
-            client_secret="EbPZRCCcmXXkQbkzo6BFSrkLNYQdFg",
-            user_agent="CryptoDashboard990 by /u/DavidMi180",
-            password="Pakistan180",
-            username="DavidMi180",
-            # client_id="AFQf5b4mzQjv9lgoZ7Q_5A",
-            # client_secret="_luV8kAyWuyQNCMO5d20V5hXe9xd2g",
-            # user_agent="Dev by /u/DavidMi990",
-            # password="Pakistan990",
-            # username="DavidMi990",
+            # client_id="TlMkAZVd8CO4k1j54fbcQg",
+            # client_secret="EbPZRCCcmXXkQbkzo6BFSrkLNYQdFg",
+            # user_agent="CryptoDashboard990 by /u/DavidMi180",
+            # password="Pakistan180",
+            # username="DavidMi180",
+            client_id="AFQf5b4mzQjv9lgoZ7Q_5A",
+            client_secret="_luV8kAyWuyQNCMO5d20V5hXe9xd2g",
+            user_agent="Dev by /u/DavidMi990",
+            password="Pakistan990",
+            username="DavidMi990",
         )
         return reddit
     except praw.exceptions.PRAWException as e:
@@ -62,28 +62,28 @@ def authenticate_reddit():
         return None
 
 
-def create_database():
-    connection = sqlite3.connect("reddit_data.db")
-    cursor = connection.cursor()
-    cursor.execute(
-        """CREATE TABLE IF NOT EXISTS reddit_posts (Timestamp DATETIME, Coins TEXT, Compound REAL)"""
-    )
-    connection.commit()
-    connection.close()
+# def create_database():
+#     connection = sqlite3.connect("reddit_data.db")
+#     cursor = connection.cursor()
+#     cursor.execute(
+#         """CREATE TABLE IF NOT EXISTS reddit_posts (Timestamp DATETIME, Coins TEXT, Compound REAL)"""
+#     )
+#     connection.commit()
+#     connection.close()
 
 
-def insert_reddit_posts(reddit_df):
-    connection = sqlite3.connect("reddit_data.db")
-    reddit_df.to_sql("reddit_posts", connection, if_exists="append", index=False)
-    connection.commit()
-    connection.close()
+# def insert_reddit_posts(reddit_df):
+#     connection = sqlite3.connect("reddit_data.db")
+#     reddit_df.to_sql("reddit_posts", connection, if_exists="append", index=False)
+#     connection.commit()
+#     connection.close()
 
 
-def fetch_historical_data():
-    connection = sqlite3.connect("reddit_data.db")
-    reddit_df = pd.read_sql_query("SELECT * FROM reddit_posts", connection)
-    connection.close()
-    return reddit_df
+# def fetch_historical_data():
+#     connection = sqlite3.connect("reddit_data.db")
+#     reddit_df = pd.read_sql_query("SELECT * FROM reddit_posts", connection)
+#     connection.close()
+#     return reddit_df
 
 
 def fetch_reddit_posts(_reddit, num_posts):
@@ -112,7 +112,7 @@ def fetch_reddit_posts(_reddit, num_posts):
         posts_list = [dict(post) for post in posts]
         reddit_df = pd.DataFrame.from_dict(posts_list)
 
-        insert_reddit_posts(reddit_df)
+        # insert_reddit_posts(reddit_df)
         return reddit_df
     except praw.exceptions.PRAWException as e:
         # Handle API error
